@@ -133,6 +133,12 @@ extern void GULLogDebug(GULLoggerService service,
 }  // extern "C"
 #endif  // __cplusplus
 
+typedef void (*GULLogImp)(GULLoggerLevel level, NSString *version, GULLoggerService service, NSString *messageCode, NSString *message);
+
+@interface GULLoggerConfig : NSObject
+@property (class) GULLogImp logImp;
+@end
+
 @interface GULLoggerWrapper : NSObject
 
 /**

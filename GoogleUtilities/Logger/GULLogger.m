@@ -43,6 +43,22 @@ static NSString *const kMessageCodePattern = @"^I-[A-Z]{3}[0-9]{6}$";
 static NSRegularExpression *sMessageCodeRegex;
 #endif
 
+@implementation GULLoggerConfig
+
++ (void)setLogImp:(GULLogImp)logImp;
+{
+    _logImp = logImp;
+}
+
++ (GULLogImp)logImp;
+{
+    return _logImp;
+}
+
+static GULLogImp _logImp;
+
+@end
+
 void GULLoggerInitializeASL(void) {
   dispatch_once(&sGULLoggerOnceToken, ^{
     NSInteger majorOSVersion = [[GULAppEnvironmentUtil systemVersion] integerValue];
@@ -168,10 +184,14 @@ void GULLogBasic(GULLoggerLevel level,
   } else {
     logMsg = [[NSString alloc] initWithFormat:message arguments:args_ptr];
   }
-  logMsg = [NSString stringWithFormat:@"%@ - %@[%@] %@", sVersion, service, messageCode, logMsg];
   dispatch_async(sGULClientQueue, ^{
-    asl_log(sGULLoggerClient, NULL, (int)level, "%s", logMsg.UTF8String);
+    GULLoggerConfig.logImp(level, sVersion, service, messageCode, logMsg);
   });
+}
+
+static void defaultLogImp(GULLoggerLevel level, NSString *version, GULLoggerService service, NSString *messageCode, NSString *message) {
+    NSString *logMsg = [NSString stringWithFormat:@"%@ - %@[%@] %@", sVersion, service, messageCode, logMsg];
+        asl_log(sGULLoggerClient, NULL, (int)level, "%s", logMsg.UTF8String);
 }
 #pragma clang diagnostic pop
 
