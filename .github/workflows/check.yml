@@ -5,6 +5,10 @@ on:
   push:
     branches: main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: macos-latest
@@ -30,7 +34,7 @@ jobs:
     - name: Setup check
       run: |
         brew update
-        brew install clang-format@13
+        brew install clang-format@14
         brew install mint
         mint bootstrap
 
@@ -45,9 +49,6 @@ jobs:
 
     - name: Copyrights
       run: scripts/check_copyright.sh
-
-    - name: Module imports
-      run: scripts/check_no_module_imports.sh
 
     - name: Imports
       run: scripts/check_imports.swift

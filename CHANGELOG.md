@@ -1,3 +1,19 @@
+# 7.9.0 (Swift PM)
+- Don't use underscores in SPM target names. This fixes an App Store submission
+  issue for SPM builds that dynamically link (firebase-ios-sdk/#9912). (#83)
+
+# 7.8.0
+- Update `+ [GULAppEnvironmentUtil deploymentType]` API to fall back to
+  `unknown` instead of `cocoapods`. (#79)
+- Prevent keychain access from prompting user for permissions on macOS. Using
+  GoogleUtilities's keychain wrapper API **on macOS** now requires that the
+  target be signed with a provisioning profile that has the Keychain Sharing
+  capability enabled. (#75)
+
+# 7.7.1
+- Swift Package Manager only release. Unify OCMock dependency with Firebase
+  repo. (https://github.com/firebase/firebase-ios-sdk/issues/9591)
+
 # 7.7.0
 - Do not dispose a swizzler's generated class when `GULGeneratedClassDisposeDisabled`
   environment variable is set. (#66)
